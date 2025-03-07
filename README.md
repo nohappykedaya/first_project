@@ -1,10 +1,10 @@
-![微信图片_20250301131222](https://github.com/user-attachments/assets/bd506944-e216-4023-9da1-2796e536883c)![image](https://github.com/user-attachments/assets/bdcd85df-dc9c-4c98-8f42-9ae367ea8b09)以下是README.md的内容建议，采用简洁清晰的结构：
+
 
 # 日志查看器 - LogViewer
 
 一个基于Qt开发的轻量级日志查看工具，支持实时监控、关键词过滤和错误高亮功能。
 
-![界面截图](截图URL) <!-- 建议实际运行时补充截图 -->
+![微信截图_20250307224314](https://github.com/user-attachments/assets/8c7d4d82-db65-4409-9af6-1588367660c7)
 
 ## 主要功能
 
@@ -42,14 +42,22 @@ qmake && make
 ## 使用指南
 
 ### 界面布局
-```
-[打开文件按钮] [路径显示标签]      [过滤按钮]
-+------------------------------------------+
-|              日志表格视图                |
-| (时间列 | 等级列 | 内容列)               |
-+------------------------------------------+
-[过滤输入框]
-```
+graph TB
+    subgraph 主界面
+        A[打开文件按钮] --> B[路径显示标签]
+        C[过滤按钮] --> D[过滤输入框]
+        E[日志表格视图]
+        
+        style A fill:#4CAF50,color:white
+        style C fill:#2196F3,color:white
+        style D fill:#FFF,color:#000
+        style E fill:#f5f5f5
+        
+        A -- 顶部操作栏 --> B
+        B -- 顶部操作栏 --> C
+        D -.- 底部过滤区
+        E -.- 中部显示区
+    end
 
 ### 操作说明
 1. **打开文件**：点击左上角按钮选择.log文件
@@ -63,12 +71,20 @@ qmake && make
 ## 技术实现
 
 ### 架构设计
-graph LR
-A[FileReader线程] -->|推送新日志| B(LogModel)
-B -->|数据更新| C[TableView]
-D[文件监控] -->|变化通知| A
-E[过滤输入] -->|关键词| B
-```
+sequenceDiagram
+    participant UI as 用户界面
+    participant Model as LogModel
+    participant Thread as FileReader线程
+    participant Watcher as 文件监控
+    
+    UI->>+Thread: 1. 选择文件
+    Thread->>+Model: 2. 推送新日志(linesReady)
+    Model-->>UI: 3. 更新表格视图
+    Watcher->>+UI: 4. 文件修改通知
+    UI->>+Thread: 5. 请求增量读取
+    UI->>UI: 6. 输入过滤关键词
+    UI->>+Model: 7. 应用过滤(applyFilter)
+    Model-->>UI: 8. 刷新显示
 
         ### 关键技术
 - **Qt框架**：信号槽机制实现组件通信
