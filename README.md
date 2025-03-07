@@ -26,9 +26,9 @@
 ### 预编译版本
 1. 从[Release页面](链接)下载对应系统的压缩包
 2. 解压后运行：
-     Windows下
+ # Windows下
    双击LogViewer.exe
-   # Linux下
+ # Linux下
    ./LogViewe
 
 ### 从源码构建
